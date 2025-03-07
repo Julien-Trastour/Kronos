@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
@@ -9,9 +10,16 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// 🔹 Configuration CORS
+app.use(cors({
+    origin: ["http://localhost:5173", "https://ton-frontend.vercel.app"],
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+}));
+
 app.use(express.json());
 
-// 📌 Routes attachées correctement
+// Routes
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/roles", rolesRoutes);
