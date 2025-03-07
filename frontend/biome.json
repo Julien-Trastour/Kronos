@@ -1,0 +1,9 @@
+{
+    "extends": ["biome:recommended"],
+    "rules": {
+        "format": {
+            "indent-style": "space",
+            "line-width": 100
+        }
+    }
+}
