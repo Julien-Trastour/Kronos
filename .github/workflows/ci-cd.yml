@@ -43,12 +43,16 @@ jobs:
           npm install
 
       - name: Set up Database Schema
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cd backend
           npx prisma generate
           npx prisma migrate dev --name init
 
       - name: Run tests
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cd backend
           npm test
