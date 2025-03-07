@@ -45,6 +45,7 @@ jobs:
       - name: Set up Database Schema
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           cd backend
           npx prisma generate
