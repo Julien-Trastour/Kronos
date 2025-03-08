@@ -1,6 +1,8 @@
 {
   "name": "backend",
+  "private": "true",
   "version": "1.0.0",
+  "type": "module",
   "description": "API Backend de Kronos",
   "main": "index.js",
   "scripts": {
