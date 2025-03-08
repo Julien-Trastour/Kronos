@@ -22,12 +22,35 @@ model Agency {
   addressExtra  String?
   postalCode    String
   city          String
+
   manager       Employee? @relation("AgencyManager", fields: [managerId], references: [id])
   managerId     String?   @unique
+
   employees     Employee[] @relation("AgencyEmployees")
+  teams         Team[]     @relation("AgencyTeams")
+
   employeeCount Int      @default(0)
   status        String
   createdAt     DateTime @default(now())
+}
+
+model Team {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  members     Int      @default(0)
+
+  leader      Employee? @relation("TeamLeader", fields: [leaderId], references: [id])
+  leaderId    String?  @unique
+
+  agency      Agency   @relation("AgencyTeams", fields: [agencyId], references: [id])
+  agencyId    String
+
+  parentTeam  Team?    @relation("SubTeam", fields: [parentTeamId], references: [id])
+  parentTeamId String?
+  subTeams    Team[]   @relation("SubTeam")
+
+  employees   Employee[] @relation("TeamEmployees")
+  createdAt   DateTime @default(now())
 }
 
 model Employee {
@@ -36,11 +59,19 @@ model Employee {
   password   String
   firstName  String
   lastName   String
+
   role       Role    @relation(fields: [roleId], references: [id])
   roleId     String
   agency     Agency? @relation("AgencyEmployees", fields: [agencyId], references: [id])
   agencyId   String?
+
+  team       Team?   @relation("TeamEmployees", fields: [teamId], references: [id])
+  teamId     String?
+
+  managedTeam Team?  @relation("TeamLeader")
   managedAgency Agency? @relation("AgencyManager")
+
+  status     String  @default("Actif")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

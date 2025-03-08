@@ -44,22 +44,25 @@
   width: 100%;
 }
 
-.menu-item {
+.sidebar-menu .menu-item {
+  display: block;
   padding: 15px 20px;
   text-align: left;
   font-size: 1rem;
-  cursor: pointer;
+  text-decoration: none;
+  color: white;
   transition: background 0.3s;
 }
 
-.menu-item:hover {
+.sidebar-menu .menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.menu-item.active {
+.sidebar-menu .menu-item.active {
   background: #0ea5e9;
-  color: white;
   font-weight: bold;
+  color: white;
+  border-left: 4px solid white;
 }
 
 /* Main Content */

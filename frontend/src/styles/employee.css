@@ -1,0 +1,91 @@
+.employee-container {
+    padding: 20px;
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* En-tête */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+  }
+  
+  .add-employee {
+    background: #0ea5e9;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-employee:hover {
+    background: #3b82f6;
+  }
+  
+  /* Barre de recherche */
+  .search-bar {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  /* Tableau des employés */
+  .employee-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .employee-table th, .employee-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+  }
+  
+  .employee-table th {
+    background-color: #222;
+  }
+  
+  /* Statut */
+  .status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .status.actif {
+    background-color: #2ecc71;
+  }
+  
+  .status.inactif {
+    background-color: #e74c3c;
+  }
+  
+  /* Actions */
+  button.edit, button.toggle-status {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 10px;
+  }
+  
+  button.edit:hover {
+    color: #0ea5e9;
+  }
+  
+  button.toggle-status:hover {
+    color: #e74c3c;
+  }
+  

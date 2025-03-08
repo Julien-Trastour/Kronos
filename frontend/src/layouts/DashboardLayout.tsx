@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCommentDots, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import '../styles/dashboard.css';
@@ -15,9 +16,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="sidebar-header">KRONOS</div>
         <nav className="sidebar-menu">
           <ul>
-            <li className="menu-item active">Tableau de Bord</li>
-            <li className="menu-item">Employés</li>
-            <li className="menu-item">Paramètres</li>
+            <li>
+              <NavLink to="/dashboard" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+                Tableau de Bord
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/employees" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+                Employés
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/settings" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+                Paramètres
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </aside>
