@@ -13,6 +13,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">KRONOS</div>
+        <nav className="sidebar-menu">
+          <ul>
+            <li className="menu-item active">Tableau de Bord</li>
+            <li className="menu-item">Employés</li>
+            <li className="menu-item">Paramètres</li>
+          </ul>
+        </nav>
       </aside>
 
       {/* Main content */}
