@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCommentDots, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCommentDots, faSignOutAlt, faUsers, faUsersCog, faBuilding, faCogs } from '@fortawesome/free-solid-svg-icons';
 import '../styles/dashboard.css';
 
 interface DashboardLayoutProps {
@@ -23,12 +23,22 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </li>
             <li>
               <NavLink to="/employees" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-                Employés
+                <FontAwesomeIcon icon={faUsers} className="icon" /> Employés
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/roles" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+                <FontAwesomeIcon icon={faUsersCog} className="icon" /> Rôles
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/agencies" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+                <FontAwesomeIcon icon={faBuilding} className="icon" /> Agences
               </NavLink>
             </li>
             <li>
               <NavLink to="/settings" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-                Paramètres
+                <FontAwesomeIcon icon={faCogs} className="icon" /> Paramètres
               </NavLink>
             </li>
           </ul>
