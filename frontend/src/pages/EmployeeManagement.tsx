@@ -2,19 +2,9 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { getEmployees } from '../config/api';
 import CreateEmployeeModal from '../components/modals/CreateEmployeeModal';
+import ModifyEmployeeModal from '../components/modals/ModifyEmployeeModal';
+import { Employee } from '../types/Employee';
 import '../styles/employee.css';
-
-
-interface Employee {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  status: string;
-  role?: { name: string };
-  agency?: { name: string };
-  team?: { name: string };
-}
 
 const EmployeeManagement: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -22,7 +12,10 @@ const EmployeeManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
+  // Récupération des employés
   const fetchEmployees = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -44,6 +37,12 @@ const EmployeeManagement: React.FC = () => {
   useEffect(() => {
     fetchEmployees();
   }, []);
+
+  // Ouvrir la modale de modification
+  const handleOpenEditModal = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setShowEditModal(true);
+  };
 
   return (
     <DashboardLayout>
@@ -101,9 +100,9 @@ const EmployeeManagement: React.FC = () => {
                       <span className={`status ${emp.status.toLowerCase()}`}>{emp.status}</span>
                     </td>
                     <td>
-                      <button className="edit">📝</button>
+                      <button className="edit" onClick={() => handleOpenEditModal(emp)}>📝 Modifier</button>
                       <button className="toggle-status">
-                        {emp.status === 'Actif' ? '🚀' : '🔒'}
+                        {emp.status === 'Actif' ? '🚀 Actif' : '🔒 Inactif'}
                       </button>
                     </td>
                   </tr>
@@ -115,6 +114,15 @@ const EmployeeManagement: React.FC = () => {
         {/* Modale d'ajout d'employé */}
         {showAddModal && (
           <CreateEmployeeModal onClose={() => setShowAddModal(false)} onEmployeeAdded={fetchEmployees} />
+        )}
+
+        {/* Modale de modification d'employé */}
+        {showEditModal && selectedEmployee && (
+          <ModifyEmployeeModal
+            employee={selectedEmployee}
+            onClose={() => setShowEditModal(false)}
+            onEmployeeUpdated={fetchEmployees}
+          />
         )}
       </div>
     </DashboardLayout>

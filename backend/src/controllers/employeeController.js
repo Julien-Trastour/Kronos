@@ -55,3 +55,35 @@ export const createEmployee = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur." });
   }
 };
+
+// ✅ Modifier un employé
+export const updateEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, email, roleId, agencyId, teamId, status } = req.body;
+
+    const updatedEmployee = await prisma.employee.update({
+      where: { id },
+      data: { firstName, lastName, email, roleId, agencyId, teamId, status },
+    });
+
+    res.status(200).json(updatedEmployee);
+  } catch (error) {
+    console.error("Erreur lors de la modification de l'employé :", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};
+
+// ✅ Supprimer un employé
+export const deleteEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await prisma.employee.delete({ where: { id } });
+
+    res.status(200).json({ message: "Employé supprimé avec succès." });
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'employé :", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};

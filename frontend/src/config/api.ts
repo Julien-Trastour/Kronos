@@ -31,6 +31,23 @@ export const addEmployee = async (token: string, employeeData: any) => {
   return response.data;
 };
 
+// Fonction pour modifier un employé
+export const updateEmployee = async (token: string, id: string, employeeData: any) => {
+  const response = await api.put(`/employees/${id}`, employeeData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+// Fonction pour supprimer un employé
+export const deleteEmployee = async (token: string, id: string) => {
+  const response = await api.delete(`/employees/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+
 // Récupérer la liste des rôles
 export const getRoles = async (token: string) => {
   const response = await api.get('/roles', {
