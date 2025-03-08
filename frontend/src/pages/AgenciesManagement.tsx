@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { getAgencies } from '../config/api';
+import { getAgencies, deleteAgency } from '../config/api';
 import CreateAgencyModal from '../components/modals/CreateAgencyModal';
+import ModifyAgencyModal from '../components/modals/ModifyAgencyModal';
 
 interface Agency {
   id: string;
@@ -16,6 +17,30 @@ const AgenciesManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddAgencyModal, setShowAddAgencyModal] = useState(false);
+  const [selectedAgency, setSelectedAgency] = useState<any | null>(null);
+
+  const handleOpenEditModal = (agency: any) => {
+    setSelectedAgency(agency);
+  };
+
+  const handleDeleteAgency = async (id: string) => {
+    const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer cette agence ?");
+    if (!confirmDelete) return;
+  
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("Vous devez être connecté.");
+      return;
+    }
+  
+    try {
+      await deleteAgency(token, id);
+      alert("Agence supprimée avec succès !");
+      fetchAgencies(); // 🔄 Met à jour la liste après suppression
+    } catch (error) {
+      alert("Erreur lors de la suppression de l'agence.");
+    }
+  };
 
   const fetchAgencies = async () => {
     const token = localStorage.getItem('token');
@@ -70,8 +95,8 @@ const AgenciesManagement: React.FC = () => {
                   <td>{agency.city}</td>
                   <td>{agency.status}</td>
                   <td className="action-buttons">
-                    <button className="edit">📝 Modifier</button>
-                    <button className="delete">🗑️ Supprimer</button>
+                    <button className="edit" onClick={() => handleOpenEditModal(agency)}>📝 Modifier</button>
+                    <button className="delete" onClick={() => handleDeleteAgency(agency.id)}>🗑️ Supprimer</button>
                   </td>
                 </tr>
               ))}
@@ -80,6 +105,9 @@ const AgenciesManagement: React.FC = () => {
         )}
         {showAddAgencyModal && (
           <CreateAgencyModal onClose={() => setShowAddAgencyModal(false)} onAgencyAdded={fetchAgencies} />
+        )}
+        {selectedAgency && (
+          <ModifyAgencyModal agency={selectedAgency} onClose={() => setSelectedAgency(null)} onAgencyUpdated={fetchAgencies} />
         )}
       </div>
     </DashboardLayout>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api'; // Mettre l'url du backend
+const API_URL = 'http://localhost:5000/api'; // Mettre l'URL du backend
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -9,118 +9,65 @@ export const api = axios.create({
   },
 });
 
-// Fonction de connexion
-export const login = async (email: string, password: string) => {
-  const response = await api.post('/auth/login', { email, password });
-  return response.data;
+// 🔹 GESTION GLOBALE DES ERREURS
+const handleRequest = async (request: Promise<any>) => {
+  try {
+    const response = await request;
+    return response.data;
+  } catch (error: any) {
+    console.error("Erreur API :", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Une erreur s'est produite.");
+  }
 };
 
-// Récupérer la liste des employés
-export const getEmployees = async (token: string) => {
-  const response = await api.get('/employees', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+// 🔹 AUTHENTIFICATION
 
-// Fonction pour ajouter un employé
-export const addEmployee = async (token: string, employeeData: any) => {
-  const response = await api.post('/employees', employeeData, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const login = async (email: string, password: string) =>
+  handleRequest(api.post('/auth/login', { email, password }));
 
-// Fonction pour modifier un employé
-export const updateEmployee = async (token: string, id: string, employeeData: any) => {
-  const response = await api.put(`/employees/${id}`, employeeData, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+// 🔹 GESTION DES EMPLOYÉS
 
-// Fonction pour supprimer un employé
-export const deleteEmployee = async (token: string, id: string) => {
-  const response = await api.delete(`/employees/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const getEmployees = async (token: string) =>
+  handleRequest(api.get('/employees', { headers: { Authorization: `Bearer ${token}` } }));
+
+export const addEmployee = async (token: string, employeeData: any) =>
+  handleRequest(api.post('/employees', employeeData, { headers: { Authorization: `Bearer ${token}` } }));
+
+export const updateEmployee = async (token: string, id: string, employeeData: any) =>
+  handleRequest(api.put(`/employees/${id}`, employeeData, { headers: { Authorization: `Bearer ${token}` } }));
+
+export const deleteEmployee = async (token: string, id: string) =>
+  handleRequest(api.delete(`/employees/${id}`, { headers: { Authorization: `Bearer ${token}` } }));
 
 // 🔹 GESTION DES RÔLES
 
-// Récupérer la liste des rôles
-export const getRoles = async (token: string) => {
-  const response = await api.get('/roles', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const getRoles = async (token: string) =>
+  handleRequest(api.get('/roles', { headers: { Authorization: `Bearer ${token}` } }));
 
-// Ajouter un rôle
-export const createRole = async (token: string, name: string) => {
-  const response = await api.post('/roles', { name }, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const createRole = async (token: string, name: string) =>
+  handleRequest(api.post('/roles', { name }, { headers: { Authorization: `Bearer ${token}` } }));
 
-// Modifier un rôle
-export const updateRole = async (token: string, id: string, name: string) => {
-  const response = await api.put(`/roles/${id}`, { name }, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const updateRole = async (token: string, id: string, name: string) =>
+  handleRequest(api.put(`/roles/${id}`, { name }, { headers: { Authorization: `Bearer ${token}` } }));
 
-// Supprimer un rôle
-export const deleteRole = async (token: string, id: string) => {
-  const response = await api.delete(`/roles/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const deleteRole = async (token: string, id: string) =>
+  handleRequest(api.delete(`/roles/${id}`, { headers: { Authorization: `Bearer ${token}` } }));
 
 // 🔹 GESTION DES AGENCES
 
-// Récupérer la liste des agences
-export const getAgencies = async (token: string) => {
-  const response = await api.get('/agencies', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const getAgencies = async (token: string) =>
+  handleRequest(api.get('/agencies', { headers: { Authorization: `Bearer ${token}` } }));
 
-// Ajouter une agence
-export const createAgency = async (token: string, agencyData: any) => {
-  const response = await api.post('/agencies', agencyData, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const createAgency = async (token: string, agencyData: any) =>
+  handleRequest(api.post('/agencies', agencyData, { headers: { Authorization: `Bearer ${token}` } }));
 
-// Modifier une agence
-export const updateAgency = async (token: string, id: string, agencyData: any) => {
-  const response = await api.put(`/agencies/${id}`, agencyData, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const updateAgency = async (token: string, id: string, agencyData: any) =>
+  handleRequest(api.put(`/agencies/${id}`, agencyData, { headers: { Authorization: `Bearer ${token}` } }));
 
-// Supprimer une agence
-export const deleteAgency = async (token: string, id: string) => {
-  const response = await api.delete(`/agencies/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const deleteAgency = async (token: string, id: string) =>
+  handleRequest(api.delete(`/agencies/${id}`, { headers: { Authorization: `Bearer ${token}` } }));
 
 // 🔹 GESTION DES ÉQUIPES
 
-// Récupérer la liste des équipes
-export const getTeams = async (token: string) => {
-  const response = await api.get('/teams', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
+export const getTeams = async (token: string) =>
+  handleRequest(api.get('/teams', { headers: { Authorization: `Bearer ${token}` } }));

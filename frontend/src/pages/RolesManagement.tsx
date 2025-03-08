@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { getRoles } from '../config/api';
+import { getRoles, deleteRole } from '../config/api';
 import CreateRoleModal from '../components/modals/CreateRoleModal';
+import ModifyRoleModal from '../components/modals/ModifyRoleModal';
 
 interface Role {
   id: string;
@@ -13,6 +14,30 @@ const RolesManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<{ id: string; name: string } | null>(null);
+
+  const handleOpenEditModal = (role: { id: string; name: string }) => {
+    setSelectedRole(role);
+  };
+
+  const handleDeleteRole = async (id: string) => {
+    const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer ce rôle ?");
+    if (!confirmDelete) return;
+  
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("Vous devez être connecté.");
+      return;
+    }
+  
+    try {
+      await deleteRole(token, id);
+      alert("Rôle supprimé avec succès !");
+      fetchRoles();
+    } catch (error) {
+      alert("Erreur lors de la suppression du rôle.");
+    }
+  };
 
   const fetchRoles = async () => {
     const token = localStorage.getItem('token');
@@ -61,8 +86,8 @@ const RolesManagement: React.FC = () => {
                 <tr key={role.id}>
                   <td>{role.name}</td>
                   <td className="action-buttons">
-                    <button className="edit">📝 Modifier</button>
-                    <button className="delete">🗑️ Supprimer</button>
+                    <button className="edit" onClick={() => handleOpenEditModal(role)}>📝 Modifier</button>
+                    <button className="delete" onClick={() => handleDeleteRole(role.id)}>🗑️ Supprimer</button>
                   </td>
                 </tr>
               ))}
@@ -71,6 +96,9 @@ const RolesManagement: React.FC = () => {
         )}
         {showAddRoleModal && (
           <CreateRoleModal onClose={() => setShowAddRoleModal(false)} onRoleAdded={fetchRoles} />
+        )}
+        {selectedRole && (
+          <ModifyRoleModal role={selectedRole} onClose={() => setSelectedRole(null)} onRoleUpdated={fetchRoles} />
         )}
       </div>
     </DashboardLayout>
