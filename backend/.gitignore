@@ -2,3 +2,4 @@
 dist
 build
 prisma/migrations/
+node_modules
