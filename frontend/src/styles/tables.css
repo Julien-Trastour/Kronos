@@ -1,0 +1,100 @@
+/* Conteneur général pour les pages utilisant des tableaux */
+.table-container {
+    padding: 20px;
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* En-tête */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+  }
+  
+  .add-button {
+    background: #0ea5e9;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-button:hover {
+    background: #3b82f6;
+  }
+  
+  /* Barre de recherche */
+  .search-bar {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  /* Tableau global */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+  }
+  
+  th {
+    background-color: #222;
+  }
+  
+  /* Statut */
+  .status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .status.actif {
+    background-color: #2ecc71;
+  }
+  
+  .status.inactif {
+    background-color: #e74c3c;
+  }
+  
+  /* Actions */
+  button.edit, button.toggle-status, button.delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 10px;
+    color: #fff;
+  }
+  
+  button.edit:hover {
+    color: #0ea5e9;
+  }
+  
+  button.toggle-status:hover, button.delete:hover {
+    color: #e74c3c;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  

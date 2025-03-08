@@ -1,0 +1,37 @@
+.agencies-container {
+    padding: 20px;
+  }
+  
+  .agencies-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .agencies-table th, .agencies-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .agencies-table th {
+    background-color: #444;
+    color: white;
+  }
+  
+  .agencies-table .edit {
+    background-color: #0ea5e9;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .agencies-table .delete {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
+  

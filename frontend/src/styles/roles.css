@@ -1,0 +1,37 @@
+.roles-container {
+    padding: 20px;
+  }
+  
+  .roles-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .roles-table th, .roles-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .roles-table th {
+    background-color: #444;
+    color: white;
+  }
+  
+  .roles-table .edit {
+    background-color: #0ea5e9;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .roles-table .delete {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
