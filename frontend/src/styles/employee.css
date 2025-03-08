@@ -89,3 +89,84 @@
     color: #e74c3c;
   }
   
+  .error-message {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+/* Modal d'ajout */
+/* Fond flouté quand la modal est ouverte */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Fond assombri */
+  backdrop-filter: blur(5px); /* Ajout du flou */
+  z-index: 999; /* Juste sous la modale */
+}
+
+/* Centrage de la modale */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+/* Style du formulaire */
+.modal input, .modal select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px; /* ✅ Ajoute de l'espace entre les inputs */
+  border-radius: 5px;
+  border: none;
+  display: block; /* ✅ S'assure qu'ils restent en colonne */
+}
+
+/* Boutons alignés côte à côte */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease-in-out;
+}
+
+/* Bouton de confirmation */
+.confirm-button {
+  background: #0ea5e9;
+  color: white;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.confirm-button:hover {
+  background: #0284c7;
+}
+
+/* Bouton d'annulation */
+.close-modal {
+  background: red;
+  color: white;
+  border-radius: 5px;
+}
+
+.close-modal:hover {
+  background: darkred;
+}
