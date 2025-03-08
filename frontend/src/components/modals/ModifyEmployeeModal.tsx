@@ -38,11 +38,11 @@ const ModifyEmployeeModal: React.FC<ModifyEmployeeModalProps> = ({ employee, onC
 
         // ✅ Mise à jour des valeurs pour afficher les sélections actuelles
         setUpdatedEmployee((prev) => ({
-          ...prev,
-          roleId: prev.roleId || rolesData.find((r) => r.name === prev.role?.name)?.id || '',
-          agencyId: prev.agencyId || agenciesData.find((a) => a.name === prev.agency?.name)?.id || '',
-          teamId: prev.teamId || teamsData.find((t) => t.name === prev.team?.name)?.id || '',
-        }));
+            ...prev,
+            roleId: prev.roleId || rolesData.find((r: { id: string; name: string }) => r.name === prev.role?.name)?.id || '',
+            agencyId: prev.agencyId || agenciesData.find((a: { id: string; name: string }) => a.name === prev.agency?.name)?.id || '',
+            teamId: prev.teamId || teamsData.find((t: { id: string; name: string }) => t.name === prev.team?.name)?.id || '',
+          }));          
       } catch (error) {
         console.error("Erreur lors du chargement des données :", error);
       }
