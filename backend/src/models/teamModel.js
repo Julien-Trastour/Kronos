@@ -2,7 +2,16 @@ import prisma from '../config/db.js';
 
 // ✅ Récupérer toutes les équipes
 export const getAllTeams = async () => {
-  return prisma.team.findMany();
+  return prisma.team.findMany({
+    include: {
+      agency: { // ✅ Récupère l'agence associée
+        select: { id: true, name: true },
+      },
+      parentTeam: { // ✅ Récupère l'équipe parente
+        select: { id: true, name: true },
+      },
+    },
+  });
 };
 
 // ✅ Trouver une équipe par son ID

@@ -20,7 +20,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     if (token) {
       try {
         const decoded: { userId: string; role: string } = jwtDecode(token);
-        setUserName(decoded.role); // ⚡ Modifier si besoin (role ou autre champ)
+        setUserName(decoded.role);
       } catch (error) {
         console.error("Erreur lors du décodage du token :", error);
       }
@@ -33,9 +33,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     if (!token) return;
 
     try {
-      await logout(token); // ⚡ Appel API pour la déconnexion
-      localStorage.removeItem('token'); // ⚡ Suppression du token
-      navigate('/login'); // ⚡ Redirection vers la page de connexion
+      await logout(token);
+      localStorage.removeItem('token');
+      navigate('/login');
     } catch (error) {
       console.error("Erreur lors de la déconnexion :", error);
     }
@@ -69,6 +69,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/teams" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+              <FontAwesomeIcon icon={faUsers} className="icon" /> Equipes
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/settings" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
                 <FontAwesomeIcon icon={faCogs} className="icon" /> Paramètres
               </NavLink>
@@ -87,8 +92,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </div>
           <div className="topbar-right">
             <img src="/avatar.png" alt="User Avatar" className="avatar" />
-            <span className="user-name">{userName || "Utilisateur"}</span> {/* ⚡ Dynamisé */}
-            <FontAwesomeIcon icon={faSignOutAlt} className="icon logout-icon" onClick={handleLogout} /> {/* ⚡ Déconnexion */}
+            <span className="user-name">{userName || "Utilisateur"}</span>
+            <FontAwesomeIcon icon={faSignOutAlt} className="icon logout-icon" onClick={handleLogout} />
           </div>
         </header>
 
