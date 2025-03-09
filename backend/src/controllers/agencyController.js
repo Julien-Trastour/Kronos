@@ -112,3 +112,69 @@ export const getAgencyTypes = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur." });
   }
 };
+
+// 🔹 Créer un type d'agence
+export const createAgencyType = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ message: "Le nom du type d'agence est requis." });
+    }
+
+    const newType = await prisma.agencyType.create({
+      data: { name },
+    });
+
+    res.status(201).json(newType);
+  } catch (error) {
+    console.error("Erreur lors de la création du type d'agence :", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};
+
+// 🔹 Modifier un type d'agence
+export const modifyAgencyType = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const { id } = req.params;
+
+    if (!name) {
+      return res.status(400).json({ message: "Le nom du type d'agence est requis." });
+    }
+
+    const existingType = await prisma.agencyType.findUnique({ where: { id } });
+    if (!existingType) {
+      return res.status(404).json({ message: "Type d'agence non trouvé." });
+    }
+
+    const updatedType = await prisma.agencyType.update({
+      where: { id },
+      data: { name },
+    });
+
+    res.status(200).json(updatedType);
+  } catch (error) {
+    console.error("Erreur lors de la modification du type d'agence :", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};
+
+// 🔹 Supprimer un type d'agence
+export const deleteAgencyType = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const existingType = await prisma.agencyType.findUnique({ where: { id } });
+    if (!existingType) {
+      return res.status(404).json({ message: "Type d'agence non trouvé." });
+    }
+
+    await prisma.agencyType.delete({ where: { id } });
+
+    res.status(200).json({ message: "Type d'agence supprimé avec succès." });
+  } catch (error) {
+    console.error("Erreur lors de la suppression du type d'agence :", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};

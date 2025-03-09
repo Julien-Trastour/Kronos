@@ -70,7 +70,16 @@ export const deleteAgency = async (token: string, id: string) =>
 // 🔹 GESTION DES TYPES D'AGENCES
 
 export const getAgencyTypes = async (token: string) =>
-  handleRequest(api.get('/agencies/agency-types', { headers: { Authorization: `Bearer ${token}` } }));
+  handleRequest(api.get('/agencies/types', { headers: { Authorization: `Bearer ${token}` } }));
+
+export const createAgencyType = async (token: string, name: string) =>
+  handleRequest(api.post('/agencies/types', { name }, { headers: { Authorization: `Bearer ${token}` } }));
+
+export const updateAgencyType = async (token: string, id: string, name: string) =>
+  handleRequest(api.put(`/agencies/types/${id}`, { name }, { headers: { Authorization: `Bearer ${token}` } }));
+
+export const deleteAgencyType = async (token: string, id: string) =>
+  handleRequest(api.delete(`/agencies/types/${id}`, { headers: { Authorization: `Bearer ${token}` } }));
 
 // 🔹 GESTION DES ÉQUIPES
 
