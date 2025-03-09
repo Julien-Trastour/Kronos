@@ -1,89 +1,62 @@
-import { getAllEmployees } from '../models/employeeModel.js';
-import prisma from '../config/db.js';
-import argon2 from 'argon2';
+import {
+  getAllEmployees,
+  createEmployeeModel,
+  updateEmployeeModel,
+  deleteEmployeeModel,
+  checkEmployeeEmailExists,
+} from '../models/employeeModel.js';
 
-// Contrôleur pour récupérer tous les employés
-export const fetchEmployees = async (req, res) => {
+import { createEmployeeSchema, updateEmployeeSchema } from '../validators/employeeValidator.js';
+
+// ✅ Récupérer tous les employés
+export const getEmployees = async (req, res, next) => {
   try {
     const employees = await getAllEmployees();
     res.status(200).json(employees);
   } catch (error) {
-    console.error("Erreur lors de la récupération des employés :", error);
-    res.status(500).json({ message: "Erreur serveur" });
+    next(error);
   }
 };
 
-// Ajouter un employé
-export const createEmployee = async (req, res) => {
+// ✅ Créer un employé
+export const createEmployee = async (req, res, next) => {
+  const { error } = createEmployeeSchema.validate(req.body);
+  if (error) return next(error);
+
   try {
-    const { firstName, lastName, email, roleId, agencyId, teamId } = req.body;
+    const { email } = req.body;
 
-    // Vérification des données
-    if (!firstName || !lastName || !email || !roleId) {
-      return res.status(400).json({ message: "Tous les champs obligatoires doivent être remplis." });
-    }
+    const existingEmployee = await checkEmployeeEmailExists(email);
+    if (existingEmployee) return next({ status: 400, message: "Cet email est déjà utilisé." });
 
-    // Vérifier si l'email existe déjà
-    const existingEmployee = await prisma.employee.findUnique({ where: { email } });
-    if (existingEmployee) {
-      return res.status(400).json({ message: "Cet email est déjà utilisé." });
-    }
-
-    // Générer un mot de passe sécurisé
-    const password = Math.random().toString(36).slice(-8);
-    const hashedPassword = await argon2.hash(password);
-
-    // Créer l'employé en base
-    const newEmployee = await prisma.employee.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        roleId,
-        agencyId,
-        teamId,
-        status: "Actif"
-      }
-    });
-
-    console.log(`✅ Employé créé : ${newEmployee.email}, Mot de passe : ${password}`);
-
-    res.status(201).json({ message: "Employé créé avec succès." });
+    const newEmployee = await createEmployeeModel(req.body);
+    res.status(201).json({ message: "Employé créé avec succès.", newEmployee });
   } catch (error) {
-    console.error("Erreur lors de la création d'un employé :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
 // ✅ Modifier un employé
-export const updateEmployee = async (req, res) => {
+export const updateEmployee = async (req, res, next) => {
+  const { error } = updateEmployeeSchema.validate(req.body);
+  if (error) return next(error);
+
   try {
     const { id } = req.params;
-    const { firstName, lastName, email, roleId, agencyId, teamId, status } = req.body;
-
-    const updatedEmployee = await prisma.employee.update({
-      where: { id },
-      data: { firstName, lastName, email, roleId, agencyId, teamId, status },
-    });
-
+    const updatedEmployee = await updateEmployeeModel(id, req.body);
     res.status(200).json(updatedEmployee);
   } catch (error) {
-    console.error("Erreur lors de la modification de l'employé :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
 // ✅ Supprimer un employé
-export const deleteEmployee = async (req, res) => {
+export const deleteEmployee = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    await prisma.employee.delete({ where: { id } });
-
+    await deleteEmployeeModel(id);
     res.status(200).json({ message: "Employé supprimé avec succès." });
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'employé :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };

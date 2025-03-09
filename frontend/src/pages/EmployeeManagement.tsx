@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { getEmployees } from '../config/api';
+import { getEmployees } from '../config/api/employees';
 import CreateEmployeeModal from '../components/modals/CreateEmployeeModal';
 import ModifyEmployeeModal from '../components/modals/ModifyEmployeeModal';
 import { Employee } from '../types/Employee';

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createAgency, getAgencyTypes } from '../../config/api';
+import { createAgency, getAgencyTypes } from '../../config/api/agencies';
 import { AgencyType } from '../../types/Agency';
 
 interface CreateAgencyModalProps {

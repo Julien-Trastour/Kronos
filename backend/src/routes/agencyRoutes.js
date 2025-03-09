@@ -2,11 +2,11 @@ import express from 'express';
 import {
   getAgencies,
   createAgency,
-  modifyAgency,
+  updateAgency,
   deleteAgency,
   getAgencyTypes,
   createAgencyType,
-  modifyAgencyType,
+  updateAgencyType,
   deleteAgencyType
 } from '../controllers/agencyController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
@@ -20,7 +20,7 @@ router.get('/', authenticate, getAgencies);
 router.post('/', authenticate, createAgency);
 
 // ✅ Modifier une agence
-router.put('/:id', authenticate, modifyAgency);
+router.put('/:id', authenticate, updateAgency);
 
 // ✅ Supprimer une agence
 router.delete('/:id', authenticate, deleteAgency);
@@ -32,7 +32,7 @@ router.get('/types', authenticate, getAgencyTypes);
 router.post('/types', authenticate, createAgencyType);
 
 // ✅ Modifier un type d'agence
-router.put('/types/:id', authenticate, modifyAgencyType);
+router.put('/types/:id', authenticate, updateAgencyType);
 
 // ✅ Supprimer un type d'agence
 router.delete('/types/:id', authenticate, deleteAgencyType);

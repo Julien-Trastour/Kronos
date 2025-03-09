@@ -1,11 +1,11 @@
 import express from 'express';
-import { fetchEmployees, createEmployee, updateEmployee, deleteEmployee } from '../controllers/employeeController.js';
+import { getEmployees, createEmployee, updateEmployee, deleteEmployee } from '../controllers/employeeController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // Route protégée pour récupérer la liste des employés
-router.get('/', authenticate, fetchEmployees);
+router.get('/', authenticate, getEmployees);
 
 // Route protégée pour ajouter un employé
 router.post('/', authenticate, createEmployee);

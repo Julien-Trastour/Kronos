@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { updateAgencyType } from '../../config/api';
+import { updateAgencyType } from '../../config/api/agencies';
 
 interface ModifyAgencyTypeModalProps {
   typeId: string;

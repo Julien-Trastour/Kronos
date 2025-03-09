@@ -5,7 +5,14 @@ export default defineConfig({
   description: 'Documentation pour l\'API Kronos',
   lastUpdated: true,
   base: '/',
+
   themeConfig: {
+    nav: [
+      { text: 'Guide', link: '/guides/getting-started' },
+      { text: 'API', link: '/api/overview' },
+      { text: 'GitHub', link: 'https://github.com/Julien-Trastour/Kronos' }
+    ],
+
     sidebar: {
       '/api/': [
         {
@@ -17,7 +24,7 @@ export default defineConfig({
             { text: 'Gestion des rôles', link: '/api/roles' },
             { text: 'Gestion des agences', link: '/api/agencies' },
             { text: 'Gestion des équipes', link: '/api/teams' },
-            { text: 'Exemples d\'utilisation', link: '/api/examples' },
+            { text: 'Exemples d\'utilisation', link: '/api/examples' }
           ]
         }
       ],
@@ -31,11 +38,6 @@ export default defineConfig({
           ]
         }
       ]
-    },
-    nav: [
-      { text: 'Guide', link: '/guides/getting-started' },
-      { text: 'API', link: '/api/overview' },
-      { text: 'GitHub', link: 'https://github.com/Julien-Trastour/Kronos' }
-    ]
+    }
   }
 });

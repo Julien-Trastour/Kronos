@@ -1,5 +1,5 @@
 import express from 'express';
-import { getTeams, createTeam, modifyTeam, deleteTeam } from '../controllers/teamController.js';
+import { getTeams, createTeam, updateTeam, deleteTeam } from '../controllers/teamController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router.get('/', authenticate, getTeams);
 router.post('/', authenticate, createTeam);
 
 // ✅ Modifier une équipe
-router.put('/:id', authenticate, modifyTeam);
+router.put('/:id', authenticate, updateTeam);
 
 // ✅ Supprimer une équipe
 router.delete('/:id', authenticate, deleteTeam);

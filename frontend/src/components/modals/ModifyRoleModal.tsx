@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { updateRole } from '../../config/api';
+import { updateRole } from '../../config/api/roles';
 
 interface ModifyRoleModalProps {
   role: { id: string; name: string; parentRole?: { id: string; name: string } | null };

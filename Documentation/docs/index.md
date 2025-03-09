@@ -1,3 +1,7 @@
+---
+lastUpdated: true
+---
+
 # 📘 Documentation de l'API Kronos
 
 Bienvenue dans la documentation officielle de l'API **Kronos**.  

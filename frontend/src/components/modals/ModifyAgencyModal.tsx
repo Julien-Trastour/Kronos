@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { updateAgency, getAgencyTypes } from '../../config/api';
+import { updateAgency, getAgencyTypes } from '../../config/api/agencies';
 import { Agency, AgencyType } from '../../types/Agency';
 
 interface ModifyAgencyModalProps {
@@ -44,7 +44,7 @@ const ModifyAgencyModal: React.FC<ModifyAgencyModalProps> = ({ agency, onClose, 
   };
 
   const handleUpdateAgency = async () => {
-    if (!agencyName.trim() || !agencyType.trim() || !address.trim() || !postalCode.trim() || !city.trim()) {
+    if (!agencyName.trim() || !String(agencyType).trim() || !address.trim() || !postalCode.trim() || !city.trim()) {
       alert("Tous les champs sont obligatoires.");
       return;
     }
@@ -63,7 +63,7 @@ const ModifyAgencyModal: React.FC<ModifyAgencyModalProps> = ({ agency, onClose, 
     try {
       await updateAgency(token, agency.id, { 
         name: agencyName,
-        typeId: agencyType,
+        typeId: String(agencyType),
         address,
         postalCode,
         city,

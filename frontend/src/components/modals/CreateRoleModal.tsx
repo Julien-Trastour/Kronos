@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createRole } from '../../config/api';
+import { createRole } from '../../config/api/roles';
 
 interface CreateRoleModalProps {
   onClose: () => void;

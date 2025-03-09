@@ -1,180 +1,127 @@
-import prisma from '../config/db.js';
+import {
+  getAllAgencies,
+  findAgencyById,
+  createAgencyModel,
+  updateAgencyModel,
+  deleteAgencyModel,
+  getAllAgencyTypes,
+  findAgencyTypeById,
+  createAgencyTypeModel,
+  updateAgencyTypeModel,
+  deleteAgencyTypeModel,
+} from '../models/agencyModel.js';
 
-// 🔹 Récupérer toutes les agences avec leur type d'agence
-export const getAgencies = async (req, res) => {
+import { createAgencySchema, updateAgencySchema } from '../validators/agencyValidator.js';
+
+// ✅ Récupérer toutes les agences
+export const getAgencies = async (req, res, next) => {
   try {
-    const agencies = await prisma.agency.findMany({
-      select: {
-        id: true,
-        name: true,
-        typeId: true,
-        type: { select: { id: true, name: true } }, // ✅ Inclut les infos du type
-        address: true,
-        postalCode: true,
-        city: true,
-        status: true,
-      },
-    });
+    const agencies = await getAllAgencies();
     res.status(200).json(agencies);
   } catch (error) {
-    console.error("Erreur lors de la récupération des agences :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
-// 🔹 Créer une agence
-export const createAgency = async (req, res) => {
+// ✅ Créer une agence (avec validation Joi)
+export const createAgency = async (req, res, next) => {
+  const { error } = createAgencySchema.validate(req.body);
+  if (error) return next(error);
+
   try {
-    const { name, typeId, address, postalCode, city, status } = req.body;
+    const { name, typeId } = req.body;
 
-    if (!name || !typeId || !address || !postalCode || !city || !status) {
-      return res.status(400).json({ message: "Tous les champs obligatoires doivent être remplis." });
-    }
+    const existingType = await findAgencyTypeById(typeId);
+    if (!existingType) return next({ status: 400, message: "Type d'agence invalide." });
 
-    // Vérifier si le type d'agence existe
-    const existingType = await prisma.agencyType.findUnique({ where: { id: typeId } });
-    if (!existingType) {
-      return res.status(400).json({ message: "Type d'agence invalide." });
-    }
-
-    const newAgency = await prisma.agency.create({
-      data: { name, typeId, address, postalCode, city, status },
-    });
-
+    const newAgency = await createAgencyModel(req.body);
     res.status(201).json(newAgency);
   } catch (error) {
-    console.error("Erreur lors de la création de l'agence :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
-// 🔹 Modifier une agence
-export const modifyAgency = async (req, res) => {
+// ✅ Modifier une agence (avec validation Joi)
+export const updateAgency = async (req, res, next) => {
+  const { error } = updateAgencySchema.validate(req.body);
+  if (error) return next(error);
+
   try {
-    const { name, typeId, address, postalCode, city, status } = req.body;
     const { id } = req.params;
+    const existingAgency = await findAgencyById(id);
+    if (!existingAgency) return next({ status: 404, message: "Agence non trouvée." });
 
-    if (!name || !typeId || !address || !postalCode || !city || !status) {
-      return res.status(400).json({ message: "Tous les champs obligatoires doivent être remplis." });
-    }
-
-    // Vérifier si l'agence existe
-    const existingAgency = await prisma.agency.findUnique({ where: { id } });
-    if (!existingAgency) {
-      return res.status(404).json({ message: "Agence non trouvée." });
-    }
-
-    // Vérifier si le type d'agence existe
-    const existingType = await prisma.agencyType.findUnique({ where: { id: typeId } });
-    if (!existingType) {
-      return res.status(400).json({ message: "Type d'agence invalide." });
-    }
-
-    const updatedAgency = await prisma.agency.update({
-      where: { id },
-      data: { name, typeId, address, postalCode, city, status },
-    });
-
+    const updatedAgency = await updateAgencyModel(id, req.body);
     res.status(200).json(updatedAgency);
   } catch (error) {
-    console.error("Erreur lors de la modification de l'agence :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
-// 🔹 Supprimer une agence
-export const deleteAgency = async (req, res) => {
+// ✅ Supprimer une agence
+export const deleteAgency = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const existingAgency = await findAgencyById(id);
+    if (!existingAgency) return next({ status: 404, message: "Agence non trouvée." });
 
-    // Vérifier si l'agence existe
-    const existingAgency = await prisma.agency.findUnique({ where: { id } });
-    if (!existingAgency) {
-      return res.status(404).json({ message: "Agence non trouvée." });
-    }
-
-    await prisma.agency.delete({ where: { id } });
-
+    await deleteAgencyModel(id);
     res.status(200).json({ message: "Agence supprimée avec succès." });
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'agence :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
-// 🔹 Récupérer la liste des types d'agences
-export const getAgencyTypes = async (req, res) => {
+// ✅ Récupérer la liste des types d'agences
+export const getAgencyTypes = async (req, res, next) => {
   try {
-    const agencyTypes = await prisma.agencyType.findMany();
+    const agencyTypes = await getAllAgencyTypes();
     res.status(200).json(agencyTypes);
   } catch (error) {
-    console.error("Erreur lors de la récupération des types d'agences :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
-// 🔹 Créer un type d'agence
-export const createAgencyType = async (req, res) => {
+// ✅ Créer un type d'agence
+export const createAgencyType = async (req, res, next) => {
   try {
     const { name } = req.body;
+    if (!name) return next({ status: 400, message: "Le nom du type d'agence est requis." });
 
-    if (!name) {
-      return res.status(400).json({ message: "Le nom du type d'agence est requis." });
-    }
-
-    const newType = await prisma.agencyType.create({
-      data: { name },
-    });
-
+    const newType = await createAgencyTypeModel(name);
     res.status(201).json(newType);
   } catch (error) {
-    console.error("Erreur lors de la création du type d'agence :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
-// 🔹 Modifier un type d'agence
-export const modifyAgencyType = async (req, res) => {
+// ✅ Modifier un type d'agence
+export const updateAgencyType = async (req, res, next) => {
   try {
-    const { name } = req.body;
     const { id } = req.params;
+    const { name } = req.body;
+    if (!name) return next({ status: 400, message: "Le nom du type d'agence est requis." });
 
-    if (!name) {
-      return res.status(400).json({ message: "Le nom du type d'agence est requis." });
-    }
+    const existingType = await findAgencyTypeById(id);
+    if (!existingType) return next({ status: 404, message: "Type d'agence non trouvé." });
 
-    const existingType = await prisma.agencyType.findUnique({ where: { id } });
-    if (!existingType) {
-      return res.status(404).json({ message: "Type d'agence non trouvé." });
-    }
-
-    const updatedType = await prisma.agencyType.update({
-      where: { id },
-      data: { name },
-    });
-
+    const updatedType = await updateAgencyTypeModel(id, name);
     res.status(200).json(updatedType);
   } catch (error) {
-    console.error("Erreur lors de la modification du type d'agence :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
-// 🔹 Supprimer un type d'agence
-export const deleteAgencyType = async (req, res) => {
+// ✅ Supprimer un type d'agence
+export const deleteAgencyType = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const existingType = await findAgencyTypeById(id);
+    if (!existingType) return next({ status: 404, message: "Type d'agence non trouvé." });
 
-    const existingType = await prisma.agencyType.findUnique({ where: { id } });
-    if (!existingType) {
-      return res.status(404).json({ message: "Type d'agence non trouvé." });
-    }
-
-    await prisma.agencyType.delete({ where: { id } });
-
+    await deleteAgencyTypeModel(id);
     res.status(200).json({ message: "Type d'agence supprimé avec succès." });
   } catch (error) {
-    console.error("Erreur lors de la suppression du type d'agence :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { getAgencies, deleteAgency, getAgencyTypes, createAgencyType, deleteAgencyType } from '../config/api';
+import { getAgencies, deleteAgency, getAgencyTypes, createAgencyType, deleteAgencyType } from '../config/api/agencies';
 import CreateAgencyModal from '../components/modals/CreateAgencyModal';
 import ModifyAgencyModal from '../components/modals/ModifyAgencyModal';
 import CreateAgencyTypeModal from '../components/modals/CreateAgencyTypeModal';

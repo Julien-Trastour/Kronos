@@ -1,64 +1,64 @@
-import prisma from '../config/db.js';
+import {
+  getAllTeams,
+  findTeamById,
+  createTeamModel,
+  updateTeamModel,
+  deleteTeamModel,
+} from '../models/teamModel.js';
+
+import { createTeamSchema, updateTeamSchema } from '../validators/teamValidator.js';
 
 // ✅ Récupérer toutes les équipes
-export const getTeams = async (req, res) => {
+export const getTeams = async (req, res, next) => {
   try {
-    const teams = await prisma.team.findMany();
+    const teams = await getAllTeams();
     res.status(200).json(teams);
   } catch (error) {
-    console.error("Erreur lors de la récupération des équipes :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
 // ✅ Créer une équipe
-export const createTeam = async (req, res) => {
+export const createTeam = async (req, res, next) => {
+  const { error } = createTeamSchema.validate(req.body);
+  if (error) return next(error);
+
   try {
     const { name, agencyId } = req.body;
-
-    if (!name || !agencyId) {
-      return res.status(400).json({ message: "Le nom de l'équipe et l'agence sont obligatoires." });
-    }
-
-    const newTeam = await prisma.team.create({
-      data: { name, agencyId, createdAt: new Date() },
-    });
-
+    const newTeam = await createTeamModel(name, agencyId);
     res.status(201).json(newTeam);
   } catch (error) {
-    console.error("Erreur lors de la création de l'équipe :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
 // ✅ Modifier une équipe
-export const modifyTeam = async (req, res) => {
+export const updateTeam = async (req, res, next) => {
+  const { error } = updateTeamSchema.validate(req.body);
+  if (error) return next(error);
+
   try {
     const { id } = req.params;
-    const { name, agencyId } = req.body;
+    const existingTeam = await findTeamById(id);
+    if (!existingTeam) return next({ status: 404, message: "Équipe non trouvée." });
 
-    const updatedTeam = await prisma.team.update({
-      where: { id },
-      data: { name, agencyId },
-    });
-
+    const updatedTeam = await updateTeamModel(id, req.body);
     res.status(200).json(updatedTeam);
   } catch (error) {
-    console.error("Erreur lors de la modification de l'équipe :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };
 
 // ✅ Supprimer une équipe
-export const deleteTeam = async (req, res) => {
+export const deleteTeam = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const existingTeam = await findTeamById(id);
+    if (!existingTeam) return next({ status: 404, message: "Équipe non trouvée." });
 
-    await prisma.team.delete({ where: { id } });
-
+    await deleteTeamModel(id);
     res.status(200).json({ message: "Équipe supprimée avec succès." });
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'équipe :", error);
-    res.status(500).json({ message: "Erreur serveur." });
+    next(error);
   }
 };

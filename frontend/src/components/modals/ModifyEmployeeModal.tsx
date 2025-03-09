@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { updateEmployee, getRoles, getAgencies, getTeams } from '../../config/api';
+import { updateEmployee } from '../../config/api/employees';
+import { getRoles } from '../../config/api/roles';
+import { getAgencies } from '../../config/api/agencies';
+import { getTeams } from '../../config/api/teams';
 import { Employee } from '../../types/Employee';
 
 interface ModifyEmployeeModalProps {
@@ -9,11 +12,12 @@ interface ModifyEmployeeModalProps {
 }
 
 const ModifyEmployeeModal: React.FC<ModifyEmployeeModalProps> = ({ employee, onClose, onEmployeeUpdated }) => {
+
   const [updatedEmployee, setUpdatedEmployee] = useState<Employee>({
     ...employee,
-    roleId: employee.role?.id || '',
-    agencyId: employee.agency?.id || '',
-    teamId: employee.team?.id || '',
+    roleId: employee.role?.id ?? "",
+    agencyId: employee.agency?.id ?? "",
+    teamId: employee.team?.id ?? "",
   });
 
   const [roles, setRoles] = useState<{ id: string; name: string }[]>([]);
@@ -22,7 +26,7 @@ const ModifyEmployeeModal: React.FC<ModifyEmployeeModalProps> = ({ employee, onC
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) return;
 
       try {
@@ -35,21 +39,26 @@ const ModifyEmployeeModal: React.FC<ModifyEmployeeModalProps> = ({ employee, onC
         setRoles(rolesData);
         setAgencies(agenciesData);
         setTeams(teamsData);
-
-        // ✅ Mise à jour des valeurs pour afficher les sélections actuelles
-        setUpdatedEmployee((prev) => ({
-            ...prev,
-            roleId: prev.roleId || rolesData.find((r: { id: string; name: string }) => r.name === prev.role?.name)?.id || '',
-            agencyId: prev.agencyId || agenciesData.find((a: { id: string; name: string }) => a.name === prev.agency?.name)?.id || '',
-            teamId: prev.teamId || teamsData.find((t: { id: string; name: string }) => t.name === prev.team?.name)?.id || '',
-          }));          
       } catch (error) {
-        console.error("Erreur lors du chargement des données :", error);
+        console.error("❌ Erreur lors du chargement des données :", error);
       }
     };
 
     fetchData();
   }, [employee]);
+
+  // 🔄 Met à jour les `select` après le chargement des données
+  useEffect(() => {
+    if (roles.length > 0 && agencies.length > 0 && teams.length > 0) {
+      setUpdatedEmployee((prev) => ({
+        ...prev,
+        roleId: prev.roleId || employee.role?.id || roles.find((r) => r.name === employee.role?.name)?.id || "",
+        agencyId: prev.agencyId || employee.agency?.id || agencies.find((a) => a.name === employee.agency?.name)?.id || "",
+        teamId: prev.teamId || employee.team?.id || teams.find((t) => t.name === employee.team?.name)?.id || "",
+      }));
+
+    }
+  }, [roles, agencies, teams]);
 
   const handleUpdateEmployee = async () => {
     const token = localStorage.getItem('token');
@@ -59,12 +68,18 @@ const ModifyEmployeeModal: React.FC<ModifyEmployeeModalProps> = ({ employee, onC
     }
 
     try {
-      await updateEmployee(token, updatedEmployee.id, updatedEmployee);
-      alert("Employé modifié avec succès !");
+      await updateEmployee(token, updatedEmployee.id, {
+        ...updatedEmployee,
+        roleId: updatedEmployee.roleId || employee.role?.id || "",
+        agencyId: updatedEmployee.agencyId || employee.agency?.id || "",
+        teamId: updatedEmployee.teamId || employee.team?.id || "",
+      });
+
+      alert("✅ Employé modifié avec succès !");
       onEmployeeUpdated();
       onClose();
     } catch (error) {
-      alert("Erreur lors de la modification.");
+      alert("❌ Erreur lors de la modification.");
     }
   };
 
@@ -98,33 +113,39 @@ const ModifyEmployeeModal: React.FC<ModifyEmployeeModalProps> = ({ employee, onC
           {/* Sélection du rôle */}
           <select
             onChange={(e) => setUpdatedEmployee({ ...updatedEmployee, roleId: e.target.value })}
-            value={updatedEmployee.roleId}
+            value={updatedEmployee.roleId || ""}
           >
             <option value="">Sélectionner un rôle</option>
             {roles.map((role) => (
-              <option key={role.id} value={role.id}>{role.name}</option>
+              <option key={role.id} value={role.id}>
+                {role.name}
+              </option>
             ))}
           </select>
 
           {/* Sélection de l'agence */}
           <select
             onChange={(e) => setUpdatedEmployee({ ...updatedEmployee, agencyId: e.target.value })}
-            value={updatedEmployee.agencyId}
+            value={updatedEmployee.agencyId || ""}
           >
             <option value="">Sélectionner une agence</option>
             {agencies.map((agency) => (
-              <option key={agency.id} value={agency.id}>{agency.name}</option>
+              <option key={agency.id} value={agency.id}>
+                {agency.name}
+              </option>
             ))}
           </select>
 
           {/* Sélection de l'équipe */}
           <select
             onChange={(e) => setUpdatedEmployee({ ...updatedEmployee, teamId: e.target.value })}
-            value={updatedEmployee.teamId}
+            value={updatedEmployee.teamId || ""}
           >
             <option value="">Sélectionner une équipe</option>
             {teams.map((team) => (
-              <option key={team.id} value={team.id}>{team.name}</option>
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
             ))}
           </select>
 
@@ -139,8 +160,12 @@ const ModifyEmployeeModal: React.FC<ModifyEmployeeModalProps> = ({ employee, onC
         </div>
 
         <div className="modal-buttons">
-          <button className="confirm-button" onClick={handleUpdateEmployee}>✅ Enregistrer</button>
-          <button className="close-modal" onClick={onClose}>❌ Annuler</button>
+          <button className="confirm-button" onClick={handleUpdateEmployee}>
+            ✅ Enregistrer
+          </button>
+          <button className="close-modal" onClick={onClose}>
+            ❌ Annuler
+          </button>
         </div>
       </div>
     </>

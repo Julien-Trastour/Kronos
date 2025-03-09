@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { getRoles, deleteRole } from '../config/api';
+import { getRoles, deleteRole } from '../config/api/roles';
 import CreateRoleModal from '../components/modals/CreateRoleModal';
 import ModifyRoleModal from '../components/modals/ModifyRoleModal';
 

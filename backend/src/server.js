@@ -1,40 +1,30 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import authRoutes from './routes/authRoutes.js';
+import agencyRoutes from './routes/agencyRoutes.js';
 import employeeRoutes from './routes/employeeRoutes.js';
 import roleRoutes from './routes/roleRoutes.js';
-import agencyRoutes from './routes/agencyRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import errorMiddleware from './middleware/errorMiddleware.js';
 
-dotenv.config();
 const app = express();
-
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
 app.use(express.json());
+app.use((req, res, next) => {
+    console.log("Request body after JSON middleware:", req.body);
+    next();
+  });
 
-// Vérification que les fichiers sont bien trouvés
-console.log("📂 Chargement des routes...");
-
-app.use('/api/auth', authRoutes);
-console.log("✅ Routes Auth chargées !");
-
-app.use('/api/employees', employeeRoutes);
-console.log("✅ Routes Employés chargées !");
-
-app.use('/api/roles', roleRoutes);
-console.log("✅ Routes Roles chargées !");
-
+// ✅ Routes API
 app.use('/api/agencies', agencyRoutes);
-console.log("✅ Routes Agencies chargées !");
-
+app.use('/api/employees', employeeRoutes);
+app.use('/api/roles', roleRoutes);
 app.use('/api/teams', teamRoutes);
-console.log("✅ Routes Teams chargées !");
+app.use('/api/auth', authRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
-});
+// ✅ Middleware global pour capturer toutes les erreurs
+app.use(errorMiddleware);
+
+// ✅ Lancer le serveur
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Serveur démarré sur le port ${PORT}`));

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { addEmployee, getRoles, getAgencies, getTeams } from '../../config/api';
+import { addEmployee } from '../../config/api/employees';
+import { getRoles } from '../../config/api/roles';
+import { getAgencies } from '../../config/api/agencies';
+import { getTeams } from '../../config/api/teams';
 
 interface CreateEmployeeModalProps {
   onClose: () => void;

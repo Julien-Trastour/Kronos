@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createAgencyType } from '../../config/api';
+import { createAgencyType } from '../../config/api/agencies';
 
 interface CreateAgencyTypeModalProps {
   onClose: () => void;

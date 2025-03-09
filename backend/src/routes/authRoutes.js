@@ -1,8 +1,16 @@
 import express from 'express';
 import { login } from '../controllers/authController.js';
+import rateLimit from 'express-rate-limit';
 
 const router = express.Router();
 
-router.post('/login', login);
+// ✅ Ajout de rate limiting pour limiter les tentatives de connexion
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limite à 5 tentatives par IP
+  message: "Trop de tentatives de connexion, réessayez plus tard."
+});
+
+router.post('/login', loginLimiter, login);
 
 export default router;
