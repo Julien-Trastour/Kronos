@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCommentDots, faSignOutAlt, faUsers, faUsersCog, faBuilding, faCogs } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCommentDots, faSignOutAlt, faUsers, faUserShield, faBuilding, faUsersRectangle, faSliders, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { logout } from '../config/api/auth';
 import { jwtDecode } from "jwt-decode";
 import '../styles/dashboard.css';
@@ -13,21 +13,20 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // 🔹 Récupérer l'utilisateur à partir du token
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
         const decoded: { userId: string; role: string } = jwtDecode(token);
-        setUserName(decoded.role);
+        setUserId(decoded.userId);
       } catch (error) {
         console.error("Erreur lors du décodage du token :", error);
       }
     }
   }, []);
 
-  // 🔹 Déconnexion
   const handleLogout = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -50,7 +49,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <ul>
             <li>
               <NavLink to="/dashboard" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-                Tableau de Bord
+                <FontAwesomeIcon icon={faChartLine} className="icon" /> Tableau de Bord
               </NavLink>
             </li>
             <li>
@@ -60,7 +59,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </li>
             <li>
               <NavLink to="/roles" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-                <FontAwesomeIcon icon={faUsersCog} className="icon" /> Rôles
+                <FontAwesomeIcon icon={faUserShield} className="icon" /> Rôles
               </NavLink>
             </li>
             <li>
@@ -70,12 +69,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </li>
             <li>
               <NavLink to="/teams" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-              <FontAwesomeIcon icon={faUsers} className="icon" /> Equipes
+                <FontAwesomeIcon icon={faUsersRectangle} className="icon" /> Équipes
               </NavLink>
             </li>
             <li>
               <NavLink to="/settings" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-                <FontAwesomeIcon icon={faCogs} className="icon" /> Paramètres
+                <FontAwesomeIcon icon={faSliders} className="icon" /> Paramètres
               </NavLink>
             </li>
           </ul>
@@ -91,7 +90,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <FontAwesomeIcon icon={faCommentDots} className="icon" />
           </div>
           <div className="topbar-right">
-            <img src="/avatar.png" alt="User Avatar" className="avatar" />
+            {/* 🔹 Avatar dynamique */}
+            <img 
+              src={userId ? `http://localhost:5000/avatars/${userId}.png` : "/avatars/default.png"} 
+              alt="User Avatar" 
+              className="avatar" 
+              onError={(e) => (e.currentTarget.src = "/avatars/default.png")} 
+            />
             <span className="user-name">{userName || "Utilisateur"}</span>
             <FontAwesomeIcon icon={faSignOutAlt} className="icon logout-icon" onClick={handleLogout} />
           </div>

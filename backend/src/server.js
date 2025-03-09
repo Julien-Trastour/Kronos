@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import agencyRoutes from './routes/agencyRoutes.js';
 import employeeRoutes from './routes/employeeRoutes.js';
 import roleRoutes from './routes/roleRoutes.js';
@@ -11,6 +13,7 @@ import { checkBlacklist } from './middleware/blacklistMiddleware.js';
 const app = express();
 app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
 app.use(express.json());
+app.use('/avatars', express.static(path.resolve('avatars')));
 
 // ✅ Vérifie si le token est blacklisté AVANT les routes protégées
 app.use(checkBlacklist);

@@ -9,7 +9,7 @@ dotenv.config();
 // ✅ Vérification que JWT_SECRET est bien défini
 if (!process.env.JWT_SECRET) {
   console.error("❌ ERREUR : JWT_SECRET est manquant dans le fichier .env");
-  process.exit(1); // Arrête le serveur si le secret est manquant
+  process.exit(1);
 }
 
 // ✅ Connexion utilisateur
@@ -42,8 +42,21 @@ export const logout = async (req, res, next) => {
     if (!token) return res.status(400).json({ message: "Aucun token fourni." });
 
     addToBlacklist(token);
+    console.log(`🔹 Token ajouté à la blacklist : ${token}`);
 
     res.status(200).json({ message: "Déconnexion réussie." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ✅ Upload d'un avatar
+export const uploadAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: "Aucun fichier fourni." });
+
+    console.log(`✅ Avatar mis à jour pour l'utilisateur : ${req.user.userId}`);
+    res.status(200).json({ message: "Avatar mis à jour avec succès !" });
   } catch (error) {
     next(error);
   }
