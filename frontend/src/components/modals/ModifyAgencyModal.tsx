@@ -1,27 +1,38 @@
-import React, { useState } from 'react';
-import { updateAgency } from '../../config/api';
+import React, { useEffect, useState } from 'react';
+import { updateAgency, getAgencyTypes } from '../../config/api';
+import { Agency, AgencyType } from '../../types/Agency';
 
 interface ModifyAgencyModalProps {
-  agency: {
-    id: string;
-    name: string;
-    type: string;
-    address: string;
-    postalCode: string;
-    city: string;
-    status: string;
-  };
+  agency: Agency;
   onClose: () => void;
   onAgencyUpdated: () => void;
 }
 
 const ModifyAgencyModal: React.FC<ModifyAgencyModalProps> = ({ agency, onClose, onAgencyUpdated }) => {
   const [agencyName, setAgencyName] = useState(agency.name);
-  const [agencyType, setAgencyType] = useState(agency.type);
+  const [agencyType, setAgencyType] = useState(agency.type?.id || '');
   const [address, setAddress] = useState(agency.address);
   const [postalCode, setPostalCode] = useState(agency.postalCode);
   const [city, setCity] = useState(agency.city);
   const [status, setStatus] = useState(agency.status);
+  const [agencyTypes, setAgencyTypes] = useState<AgencyType[]>([]);
+
+  useEffect(() => {
+    const fetchAgencyTypes = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+  
+      try {
+        const data = await getAgencyTypes(token);
+        console.log("✅ Types d'agences récupérés :", data); // 🔹 Ajoute ce log
+        setAgencyTypes(data);
+      } catch (error) {
+        console.error("❌ Erreur lors de la récupération des types d'agences :", error);
+      }
+    };
+  
+    fetchAgencyTypes();
+  }, []);  
 
   const handleUpdateAgency = async () => {
     if (!agencyName.trim() || !agencyType.trim() || !address.trim() || !postalCode.trim() || !city.trim()) {
@@ -36,7 +47,15 @@ const ModifyAgencyModal: React.FC<ModifyAgencyModalProps> = ({ agency, onClose, 
     }
 
     try {
-      await updateAgency(token, agency.id, { name: agencyName, type: agencyType, address, postalCode, city, status });
+      await updateAgency(token, agency.id, { 
+        name: agencyName,
+        typeId: agencyType,
+        address,
+        postalCode,
+        city,
+        status 
+      });
+
       alert("Agence modifiée avec succès !");
       onAgencyUpdated();
       onClose();
@@ -57,12 +76,12 @@ const ModifyAgencyModal: React.FC<ModifyAgencyModalProps> = ({ agency, onClose, 
           value={agencyName}
           onChange={(e) => setAgencyName(e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="Type d'agence"
-          value={agencyType}
-          onChange={(e) => setAgencyType(e.target.value)}
-        />
+        <select value={agencyType} onChange={(e) => setAgencyType(e.target.value)}>
+            <option value="">Sélectionner un type</option>
+            {agencyTypes.map((type) => (
+                <option key={type.id} value={type.id}>{type.name}</option>
+            ))}
+        </select>
         <input
           type="text"
           placeholder="Adresse"

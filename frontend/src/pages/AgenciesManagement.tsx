@@ -3,14 +3,8 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import { getAgencies, deleteAgency } from '../config/api';
 import CreateAgencyModal from '../components/modals/CreateAgencyModal';
 import ModifyAgencyModal from '../components/modals/ModifyAgencyModal';
+import { Agency } from '../types/Agency';
 
-interface Agency {
-  id: string;
-  name: string;
-  type: string;
-  city: string;
-  status: string;
-}
 
 const AgenciesManagement: React.FC = () => {
   const [agencies, setAgencies] = useState<Agency[]>([]);
@@ -91,7 +85,7 @@ const AgenciesManagement: React.FC = () => {
               {agencies.map((agency) => (
                 <tr key={agency.id}>
                   <td>{agency.name}</td>
-                  <td>{agency.type}</td>
+                  <td>{agency.type?.name || "Non défini"}</td>
                   <td>{agency.city}</td>
                   <td>{agency.status}</td>
                   <td className="action-buttons">

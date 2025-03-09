@@ -15,23 +15,30 @@ model Role {
 }
 
 model Agency {
-  id            String   @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String
-  type          String
+  typeId        String?    // ✅ Ajout TEMPORAIREMENT en optionnel
+  type          AgencyType? @relation(fields: [typeId], references: [id]) // ✅ Relation correcte
   address       String
   addressExtra  String?
   postalCode    String
   city          String
 
-  manager       Employee? @relation("AgencyManager", fields: [managerId], references: [id])
-  managerId     String?   @unique
+  manager       Employee?  @relation("AgencyManager", fields: [managerId], references: [id])
+  managerId     String?    @unique
 
   employees     Employee[] @relation("AgencyEmployees")
   teams         Team[]     @relation("AgencyTeams")
 
-  employeeCount Int      @default(0)
+  employeeCount Int        @default(0)
   status        String
-  createdAt     DateTime @default(now())
+  createdAt     DateTime   @default(now())
+}
+
+model AgencyType {
+  id        String  @id @default(uuid())
+  name      String  @unique
+  agencies  Agency[]
 }
 
 model Team {
