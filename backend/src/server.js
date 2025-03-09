@@ -6,14 +6,14 @@ import roleRoutes from './routes/roleRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
+import { checkBlacklist } from './middleware/blacklistMiddleware.js';
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
 app.use(express.json());
-app.use((req, res, next) => {
-    console.log("Request body after JSON middleware:", req.body);
-    next();
-  });
+
+// ✅ Vérifie si le token est blacklisté AVANT les routes protégées
+app.use(checkBlacklist);
 
 // ✅ Routes API
 app.use('/api/agencies', agencyRoutes);

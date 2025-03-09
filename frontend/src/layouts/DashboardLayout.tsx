@@ -1,7 +1,9 @@
-import React, { ReactNode } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCommentDots, faSignOutAlt, faUsers, faUsersCog, faBuilding, faCogs } from '@fortawesome/free-solid-svg-icons';
+import { logout } from '../config/api/auth';
+import { jwtDecode } from "jwt-decode";
 import '../styles/dashboard.css';
 
 interface DashboardLayoutProps {
@@ -9,6 +11,36 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState<string | null>(null);
+
+  // 🔹 Récupérer l'utilisateur à partir du token
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded: { userId: string; role: string } = jwtDecode(token);
+        setUserName(decoded.role); // ⚡ Modifier si besoin (role ou autre champ)
+      } catch (error) {
+        console.error("Erreur lors du décodage du token :", error);
+      }
+    }
+  }, []);
+
+  // 🔹 Déconnexion
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      await logout(token); // ⚡ Appel API pour la déconnexion
+      localStorage.removeItem('token'); // ⚡ Suppression du token
+      navigate('/login'); // ⚡ Redirection vers la page de connexion
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion :", error);
+    }
+  };
+
   return (
     <div className="dashboard-container">
       {/* Sidebar */}
@@ -55,8 +87,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </div>
           <div className="topbar-right">
             <img src="/avatar.png" alt="User Avatar" className="avatar" />
-            <span className="user-name">Julien Trastour</span>
-            <FontAwesomeIcon icon={faSignOutAlt} className="icon logout-icon" />
+            <span className="user-name">{userName || "Utilisateur"}</span> {/* ⚡ Dynamisé */}
+            <FontAwesomeIcon icon={faSignOutAlt} className="icon logout-icon" onClick={handleLogout} /> {/* ⚡ Déconnexion */}
           </div>
         </header>
 
