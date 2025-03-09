@@ -7,22 +7,23 @@ import ModifyRoleModal from '../components/modals/ModifyRoleModal';
 interface Role {
   id: string;
   name: string;
+  parentRole?: { id: string; name: string } | null;
 }
 
 const RolesManagement: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
+  const [search, setSearch] = useState(''); // ✅ État pour la recherche
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<{ id: string; name: string } | null>(null);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-  const handleOpenEditModal = (role: { id: string; name: string }) => {
+  const handleOpenEditModal = (role: Role) => {
     setSelectedRole(role);
   };
 
   const handleDeleteRole = async (id: string) => {
-    const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer ce rôle ?");
-    if (!confirmDelete) return;
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce rôle ?")) return;
   
     const token = localStorage.getItem('token');
     if (!token) {
@@ -61,6 +62,11 @@ const RolesManagement: React.FC = () => {
     fetchRoles();
   }, []);
 
+  // ✅ Filtrer les rôles selon la recherche
+  const filteredRoles = roles.filter((role) =>
+    role.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <DashboardLayout>
       <div className="table-container">
@@ -68,6 +74,15 @@ const RolesManagement: React.FC = () => {
           <h1>Gestion des rôles</h1>
           <button className="add-button" onClick={() => setShowAddRoleModal(true)}>➕ Ajouter un rôle</button>
         </div>
+
+        {/* ✅ Barre de recherche */}
+        <input
+          type="text"
+          placeholder="🔍 Rechercher un rôle..."
+          className="search-bar"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
         {error && <p className="error-message">{error}</p>}
 
@@ -78,16 +93,22 @@ const RolesManagement: React.FC = () => {
             <thead>
               <tr>
                 <th>Nom</th>
+                <th>Rôle Parent</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {roles.map((role) => (
+              {filteredRoles.map((role) => (
                 <tr key={role.id}>
                   <td>{role.name}</td>
+                  <td>{role.parentRole ? role.parentRole.name : 'Aucun'}</td>
                   <td className="action-buttons">
-                    <button className="edit" onClick={() => handleOpenEditModal(role)}>📝 Modifier</button>
-                    <button className="delete" onClick={() => handleDeleteRole(role.id)}>🗑️ Supprimer</button>
+                    <button className="edit" onClick={() => handleOpenEditModal(role)}>
+                      📝 Modifier
+                    </button>
+                    <button className="delete" onClick={() => handleDeleteRole(role.id)}>
+                      🗑️ Supprimer
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -95,10 +116,10 @@ const RolesManagement: React.FC = () => {
           </table>
         )}
         {showAddRoleModal && (
-          <CreateRoleModal onClose={() => setShowAddRoleModal(false)} onRoleAdded={fetchRoles} />
+          <CreateRoleModal onClose={() => setShowAddRoleModal(false)} onRoleAdded={fetchRoles} roles={roles} />
         )}
         {selectedRole && (
-          <ModifyRoleModal role={selectedRole} onClose={() => setSelectedRole(null)} onRoleUpdated={fetchRoles} />
+          <ModifyRoleModal role={selectedRole} onClose={() => setSelectedRole(null)} onRoleUpdated={fetchRoles} roles={roles} />
         )}
       </div>
     </DashboardLayout>

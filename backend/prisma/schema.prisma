@@ -12,6 +12,11 @@ model Role {
   name       String  @unique
   employees  Employee[]
   createdAt  DateTime @default(now())
+
+  parentRole  Role?    @relation("RoleHierarchy", fields: [parentRoleId], references: [id])
+  parentRoleId String?
+
+  subRoles    Role[]   @relation("RoleHierarchy")
 }
 
 model Agency {

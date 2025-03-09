@@ -41,15 +41,19 @@ export const deleteEmployee = async (token: string, id: string) =>
 
 // 🔹 GESTION DES RÔLES
 
+// Récupérer la liste des rôles (avec hiérarchie)
 export const getRoles = async (token: string) =>
   handleRequest(api.get('/roles', { headers: { Authorization: `Bearer ${token}` } }));
 
-export const createRole = async (token: string, name: string) =>
-  handleRequest(api.post('/roles', { name }, { headers: { Authorization: `Bearer ${token}` } }));
+// Ajouter un rôle (avec parentRoleId optionnel)
+export const createRole = async (token: string, name: string, parentRoleId?: string) =>
+  handleRequest(api.post('/roles', { name, parentRoleId }, { headers: { Authorization: `Bearer ${token}` } }));
 
-export const updateRole = async (token: string, id: string, name: string) =>
-  handleRequest(api.put(`/roles/${id}`, { name }, { headers: { Authorization: `Bearer ${token}` } }));
+// Modifier un rôle
+export const updateRole = async (token: string, id: string, name: string, parentRoleId?: string) =>
+  handleRequest(api.put(`/roles/${id}`, { name, parentRoleId }, { headers: { Authorization: `Bearer ${token}` } }));
 
+// Supprimer un rôle
 export const deleteRole = async (token: string, id: string) =>
   handleRequest(api.delete(`/roles/${id}`, { headers: { Authorization: `Bearer ${token}` } }));
 

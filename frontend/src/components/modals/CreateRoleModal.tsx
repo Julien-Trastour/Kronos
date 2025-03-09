@@ -4,10 +4,12 @@ import { createRole } from '../../config/api';
 interface CreateRoleModalProps {
   onClose: () => void;
   onRoleAdded: () => void;
+  roles: { id: string; name: string }[]; // ✅ Liste des rôles existants
 }
 
-const CreateRoleModal: React.FC<CreateRoleModalProps> = ({ onClose, onRoleAdded }) => {
+const CreateRoleModal: React.FC<CreateRoleModalProps> = ({ onClose, onRoleAdded, roles }) => {
   const [roleName, setRoleName] = useState('');
+  const [parentRoleId, setParentRoleId] = useState('');
 
   const handleCreateRole = async () => {
     if (!roleName.trim()) {
@@ -22,7 +24,7 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({ onClose, onRoleAdded 
     }
 
     try {
-      await createRole(token, roleName);
+      await createRole(token, roleName, parentRoleId || undefined);
       alert("Rôle ajouté avec succès !");
       onRoleAdded();
       onClose();
@@ -43,6 +45,15 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({ onClose, onRoleAdded 
           value={roleName}
           onChange={(e) => setRoleName(e.target.value)}
         />
+
+        {/* ✅ Sélecteur du rôle parent */}
+        <select value={parentRoleId} onChange={(e) => setParentRoleId(e.target.value)}>
+          <option value="">Aucun rôle parent</option>
+          {roles.map((role) => (
+            <option key={role.id} value={role.id}>{role.name}</option>
+          ))}
+        </select>
+
         <div className="modal-buttons">
           <button className="confirm-button" onClick={handleCreateRole}>✅ Ajouter</button>
           <button className="close-modal" onClick={onClose}>❌ Annuler</button>
